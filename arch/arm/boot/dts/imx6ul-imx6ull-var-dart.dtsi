@@ -50,6 +50,8 @@
 			"IN2L", "Line In Jack",
 			"IN2R", "Line In Jack",
 			"IN1L", "Mic Jack",
+			"IN1R", "Mic Jack",
+			"Mic Jack", "MICBIAS",
 			"Playback", "CPU-Playback",
 			"CPU-Capture", "Capture";
 		status = "okay";
@@ -110,7 +112,7 @@
 };
 
 &i2c2 {
-	clock_frequency = <100000>;
+	clock-frequency = <100000>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_i2c2>;
 	status = "okay";
@@ -210,7 +212,7 @@
 	assigned-clocks = <&clks IMX6UL_CLK_SAI2_SEL>,
 			  <&clks IMX6UL_CLK_SAI2>;
 	assigned-clock-parents = <&clks IMX6UL_CLK_PLL4_AUDIO_DIV>;
-	assigned-clock-rates = <0>, <12288000>;
+	assigned-clock-rates = <0>, <11565177>;
 	fsl,sai-mclk-direction-output;
 	status = "okay";
 };
