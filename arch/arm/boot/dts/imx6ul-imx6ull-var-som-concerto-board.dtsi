@@ -46,6 +46,22 @@
 			linux,default-trigger = "heartbeat";
 		};
 	};
+    regulators {
+        compatible = "simple-bus";
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        reg_usb_otg1_vbus: regulator-usb-otg1-vbus {
+            compatible = "regulator-fixed";
+            regulator-name = "usb_otg1_vbus";
+            regulator-min-microvolt = <5000000>;
+            regulator-max-microvolt = <5000000>;
+            regulator-always-on;
+            regulator-boot-on;
+        };
+    };
+
+
 };
 
 &can1 {
@@ -54,7 +70,7 @@
 	status = "okay";
 };
 
-&fec1 {
+/*&fec1 {
 	pinctrl-0 = <&pinctrl_enet1>, <&pinctrl_enet1_gpio>;
 	/delete-node/ mdio;
 };
@@ -91,14 +107,14 @@
 		};
 	};
 };
-
+*/
 &i2c1 {
 	clock_frequency = <100000>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_i2c1>;
 	status = "okay";
 
-	ft5x06_ts@38 {
+	/*ft5x06_ts@38 {
 		compatible = "edt,edt-ft5x06";
 		reg = <0x38>;
 		pinctrl-names = "default";
@@ -109,8 +125,14 @@
 		touchscreen-size-y = <480>;
 		touchscreen-inverted-x;
 		touchscreen-inverted-y;
+	};*/
+	touchscreen@41 {
+		compatible = "ilitek,ili251x";
+		reg = <0x41>;
+		interrupt-parent = <&gpio5>;
+		interrupts = <9 IRQ_TYPE_EDGE_FALLING>;
+		reset-gpios = <&gpio5 21 GPIO_ACTIVE_LOW>;
 	};
-
 	/* DS1337 RTC module */
 	rtc@68 {
 		compatible = "dallas,ds1337";
@@ -245,7 +267,6 @@
 		>;
 	};
 };
-
 &lcdif {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_lcdif_dat
@@ -260,7 +281,7 @@
 		display-timings {
 			native-mode = <&timing0>;
 			timing0: timing0 {
-				clock-frequency =<35000000>;
+				clock-frequency =<25000000>;
 				hactive = <800>;
 				vactive = <480>;
 				hfront-porch = <40>;
@@ -315,6 +336,7 @@
 	srp-disable;
 	hnp-disable;
 	adp-disable;
+    vbus-supply = <&reg_usb_otg1_vbus>;  /* Aggiungi questa riga */
 	status = "okay";
 };
 

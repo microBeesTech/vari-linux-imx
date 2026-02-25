@@ -1,0 +1,120 @@
+/*
+ * Custom Device Tree modifications for IMX6UL Variscite Concerto Board
+ * This file contains customizations without modifying the original DTSI
+ *
+ * Copyright (C) 2024 Custom modifications
+ */
+
+// Override and customize display settings
+&lcdif {
+	display0: display {
+		bits-per-pixel = <16>;
+		bus-width = <24>;
+
+		display-timings {
+			native-mode = <&timing0>;
+			timing0: timing0 {
+				clock-frequency = <25000000>;
+				hactive = <800>;
+				vactive = <480>;
+				hfront-porch = <40>;
+				hback-porch = <40>;
+				hsync-len = <48>;
+				vback-porch = <29>;
+				vfront-porch = <13>;
+				vsync-len = <3>;
+				hsync-active = <0>;
+				vsync-active = <0>;
+				de-active = <1>;
+				pixelclk-active = <0>;
+			};
+		};
+	};
+};
+
+// Disable original touchscreen if needed
+&i2c1 {
+	/delete-node/ ft5x06_ts@38;
+	
+	// Your custom touchscreen configuration
+	touchscreen@41 {
+		compatible = "ilitek,ili251x";
+		reg = <0x41>;
+		interrupt-parent = <&gpio5>;
+		interrupts = <9 IRQ_TYPE_EDGE_FALLING>;
+		reset-gpios = <&gpio5 21 GPIO_ACTIVE_LOW>;
+	};
+};
+
+// Disable Ethernet configurations if not needed
+&fec1 {
+	status = "disabled";
+};
+
+&fec2 {
+	status = "disabled";
+};
+
+// OPTIONAL: Custom GPIO keys configuration
+// Questa sezione ridefinisce i pulsanti GPIO se vuoi personalizzarli
+// Se non ti serve, puoi commentare tutta questa sezione
+/*
+/ {
+	custom-keys {
+		compatible = "gpio-keys";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_custom_gpio_keys>;
+
+		custom-back {
+			gpios = <&gpio4 14 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_BACK>;
+			label = "Custom Back Button";
+		};
+
+		custom-wakeup {
+			gpios = <&gpio5 8 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_WAKEUP>;
+			gpio-key,wakeup;
+			label = "Custom Wakeup Button";
+		};
+	};
+};
+*/
+
+// OPTIONAL: Custom pin control configurations (solo se usi i GPIO keys custom)
+/*
+&iomuxc {
+	pinctrl_custom_gpio_keys: custom_gpio_keysgrp {
+		fsl,pins = <
+			MX6UL_PAD_NAND_CE1_B__GPIO4_IO14	0x17059 /* Custom Back */
+		>;
+	};
+	
+	// Add any additional custom pinctrl configurations here
+};
+*/
+
+// Enable USB1 (OTG1) - abilitazione porta USB1
+&usbotg1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_usb_otg1_id>;
+	dr_mode = "otg";  // Può essere "otg", "host", o "peripheral"
+	disable-over-current;
+	srp-disable;
+	hnp-disable;
+	adp-disable;
+	status = "okay";  // Esplicitamente abilitata
+};
+
+// Disable components you don't need
+&snvs_pwrkey {
+	status = "disabled";
+};
+
+&snvs_rtc {
+	status = "disabled";
+};
+
+&tsc {
+	status = "disabled";
+};

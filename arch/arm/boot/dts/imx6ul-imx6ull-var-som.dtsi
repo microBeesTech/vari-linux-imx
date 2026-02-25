@@ -37,6 +37,7 @@
 			gpios = <&gpio4 13 GPIO_ACTIVE_HIGH>;
 			states = <1300000 0x1 1400000 0x0>;
 		};
+
 	};
 
 	sound {
@@ -235,3 +236,4 @@
 	uart-has-rtscts;
 	status = "okay";
 };
+
